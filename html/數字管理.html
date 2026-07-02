@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>廠務 KPI 儀表板</title>
+<style>
+  :root{
+    --bg:#F7F9FC;
+    --panel:#FFFFFF;
+    --panel-2:#EEF4FF;
+    --steel:#2563EB;
+    --steel-dim:#DBEAFE;
+    --molten:#F97316;
+    --mint:#22C55E;
+    --amber:#F59E0B;
+    --red:#EF4444;
+    --text:#1F2937;
+    --text-dim:#6B7280;
+    --text-soft:#94A3B8;
+    --hairline:#E5E7EB;
+    --hairline-2:#D1D5DB;
+    --shadow:0 8px 24px rgba(15,23,42,0.07);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Microsoft JhengHei UI','Microsoft JhengHei','PingFang TC','Heiti TC','Segoe UI',Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    justify-content:center;
+  }
+
+  .device{
+    width:100%;
+    max-width:428px;
+    min-height:100vh;
+    background:var(--bg);
+    position:relative;
+    background-image:
+      radial-gradient(circle at 20% -10%, rgba(37,99,235,0.12), transparent 180px),
+      linear-gradient(180deg, rgba(255,255,255,0.9), rgba(247,249,252,0) 180px);
+  }
+
+  /* ---------- Header ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:linear-gradient(180deg, rgba(247,249,252,0.98) 80%, rgba(247,249,252,0));
+    backdrop-filter:blur(12px);
+    padding:20px 18px 10px;
+  }
+  .plant-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+  }
+  .plant-name{
+    font-family:'Segoe UI Semibold','Microsoft JhengHei UI','Microsoft JhengHei','PingFang TC',Arial,sans-serif;
+    font-weight:700;
+    font-size:24px;
+    letter-spacing:0.4px;
+    color:var(--text);
+    line-height:1.05;
+  }
+  .plant-sub{
+    font-size:12px;
+    color:var(--text-dim);
+    margin-top:6px;
+    letter-spacing:0.4px;
+  }
+  .live-dot-wrap{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:'Cascadia Mono','Consolas','SFMono-Regular','Menlo','Microsoft JhengHei UI',monospace;
+    font-size:11px;
+    color:#16A34A;
+    padding:6px 9px;
+    border-radius:999px;
+    background:#ECFDF5;
+    border:1px solid #BBF7D0;
+    white-space:nowrap;
+  }
+  .live-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--mint);
+    box-shadow:0 0 0 0 rgba(34,197,94,0.45);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(34,197,94,0.40); }
+    70%{ box-shadow:0 0 0 6px rgba(34,197,94,0); }
+    100%{ box-shadow:0 0 0 0 rgba(34,197,94,0); }
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs{
+    position:sticky;
+    top:78px;
+    z-index:19;
+    display:flex;
+    margin:10px 18px 6px;
+    background:rgba(255,255,255,0.92);
+    border:1px solid var(--hairline);
+    border-radius:14px;
+    padding:4px;
+    gap:4px;
+    box-shadow:0 4px 14px rgba(15,23,42,0.06);
+    backdrop-filter:blur(12px);
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:11px 0;
+    font-family:'Microsoft JhengHei UI','Microsoft JhengHei','PingFang TC','Heiti TC','Segoe UI',Arial,sans-serif;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:0.3px;
+    color:var(--text-dim);
+    border-radius:10px;
+    cursor:pointer;
+    transition:all .2s ease;
+    user-select:none;
+  }
+  .tab.active{
+    background:var(--steel);
+    color:#fff;
+    box-shadow:0 6px 14px rgba(37,99,235,0.22);
+  }
+
+  .panels{
+    padding:14px 18px 42px;
+  }
+  .panel-group{ display:none; }
+  .panel-group.active{ display:block; }
+
+  /* ---------- Section label ---------- */
+  .section-label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Microsoft JhengHei UI','Microsoft JhengHei','PingFang TC','Heiti TC','Segoe UI',Arial,sans-serif;
+    font-size:12px;
+    font-weight:800;
+    color:var(--text-dim);
+    letter-spacing:0.8px;
+    margin:24px 2px 10px;
+  }
+  .section-label::before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--steel);
+    opacity:.55;
+  }
+  .section-label:first-child{ margin-top:8px; }
+
+  /* ---------- Department Card ---------- */
+  .dept-card{
+    background:var(--panel);
+    border:1px solid rgba(226,232,240,0.95);
+    border-radius:18px;
+    margin-bottom:18px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:var(--shadow);
+  }
+  .dept-card::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:5px;
+    background:var(--accent, var(--steel));
+  }
+  .dept-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 18px 13px 20px;
+    border-bottom:1px solid var(--hairline);
+    background:linear-gradient(90deg, color-mix(in srgb, var(--accent, var(--steel)) 9%, #fff), #fff 68%);
+  }
+  .dept-name-wrap{ display:flex; align-items:center; gap:9px; min-width:0; }
+  .dept-tag{
+    font-family:'Cascadia Mono','Consolas','SFMono-Regular','Menlo','Microsoft JhengHei UI',monospace;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.8px;
+    color:var(--accent, var(--steel));
+    background:#fff;
+    border:1px solid color-mix(in srgb, var(--accent, var(--steel)) 24%, #E5E7EB);
+    border-radius:999px;
+    padding:3px 8px;
+    flex:0 0 auto;
+  }
+  .dept-name{
+    font-family:'Microsoft JhengHei UI','Microsoft JhengHei','PingFang TC','Heiti TC','Segoe UI',Arial,sans-serif;
+    font-weight:900;
+    font-size:16px;
+    color:var(--text);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .dept-note{
+    font-size:11px;
+    font-weight:700;
+    color:var(--text-soft);
+    background:#F8FAFC;
+    border:1px solid #E2E8F0;
+    border-radius:999px;
+    padding:4px 8px;
+    white-space:nowrap;
+  }
+
+  .kpi-row{
+    padding:16px 18px 16px 22px;
+    border-bottom:1px solid #EEF2F7;
+  }
+  .kpi-row:last-child{ border-bottom:none; }
+
+  .kpi-top{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:14px;
+    margin-bottom:0;
+  }
+  .kpi-label{
+    font-size:13px;
+    font-weight:700;
+    color:var(--text-dim);
+    line-height:1.45;
+    max-width:none;
+  }
+  .kpi-value-wrap{
+    display:flex;
+    align-items:baseline;
+    justify-content:flex-end;
+    gap:4px;
+    flex-wrap:wrap;
+    min-width:132px;
+  }
+  .kpi-value{
+    font-family:'Cascadia Mono','Consolas','SFMono-Regular','Menlo','Microsoft JhengHei UI',monospace;
+    font-size:30px;
+    line-height:1;
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:-0.8px;
+  }
+  .kpi-unit{
+    font-family:'Microsoft JhengHei UI','Microsoft JhengHei','PingFang TC','Heiti TC','Segoe UI',Arial,sans-serif;
+    font-size:12px;
+    font-weight:700;
+    color:var(--text-dim);
+  }
+  .kpi-delta{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Cascadia Mono','Consolas','SFMono-Regular','Menlo','Microsoft JhengHei UI',monospace;
+    font-size:11px;
+    font-weight:700;
+    padding:3px 7px;
+    border-radius:999px;
+    white-space:nowrap;
+    margin-left:6px;
+  }
+  .delta-good{ color:#15803D; background:#DCFCE7; }
+  .delta-bad{ color:#B91C1C; background:#FEE2E2; }
+  .delta-warn{ color:#B45309; background:#FEF3C7; }
+
+  /* multi-stat row (quarterly bars) */
+  .quarter-bars{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+    height:80px;
+    margin-top:10px;
+    padding:10px 8px 4px;
+    background:#F8FAFC;
+    border:1px solid #EEF2F7;
+    border-radius:14px;
+  }
+  .qbar-wrap{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    height:100%;
+    justify-content:flex-end;
+    min-width:0;
+  }
+  .qbar{
+    width:100%;
+    border-radius:7px 7px 3px 3px;
+    background:color-mix(in srgb, var(--accent, var(--steel)) 18%, #E5E7EB);
+  }
+  .qbar.current{ background:var(--accent, var(--steel)); }
+  .qlabel{
+    font-family:'Cascadia Mono','Consolas','SFMono-Regular','Menlo','Microsoft JhengHei UI',monospace;
+    font-size:10px;
+    font-weight:600;
+    color:var(--text-dim);
+    white-space:nowrap;
+  }
+
+  .split-stat{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+    margin-top:10px;
+  }
+  .split-item{
+    background:#F8FAFC;
+    border:1px solid #EEF2F7;
+    border-radius:14px;
+    padding:10px 8px;
+    min-width:0;
+  }
+  .split-num{
+    font-family:'Cascadia Mono','Consolas','SFMono-Regular','Menlo','Microsoft JhengHei UI',monospace;
+    font-size:20px;
+    line-height:1;
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:-0.5px;
+  }
+  .split-cap{
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--text-dim);
+    margin-top:6px;
+    line-height:1.25;
+  }
+
+  footer.legend{
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    padding:6px 0 28px;
+    font-family:'Microsoft JhengHei UI','Microsoft JhengHei','PingFang TC','Heiti TC','Segoe UI',Arial,sans-serif;
+    font-size:11px;
+    font-weight:700;
+    color:var(--text-dim);
+  }
+  .legend-item{ display:flex; align-items:center; gap:5px; }
+  .legend-dot{ width:8px; height:8px; border-radius:3px; }
+
+  @media (max-width:380px){
+    .topbar{ padding-left:14px; padding-right:14px; }
+    .tabs{ margin-left:14px; margin-right:14px; }
+    .panels{ padding-left:14px; padding-right:14px; }
+    .plant-name{ font-size:22px; }
+    .kpi-top{ grid-template-columns:1fr; gap:8px; }
+    .kpi-value-wrap{ justify-content:flex-start; min-width:0; }
+    .kpi-value{ font-size:32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+
+  <div class="topbar">
+    <div class="plant-row">
+      <div>
+        <div class="plant-name">廠務營運儀表板</div>
+        <div class="plant-sub">鋼管 / 冷軋事業部 · 月度回顧</div>
+      </div>
+      <div class="live-dot-wrap"><span class="live-dot"></span>即時同步</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-target="support">支援部門</div>
+    <div class="tab" data-target="production">生產線</div>
+  </div>
+
+  <div class="panels">
+
+    <!-- ============ SUPPORT DEPARTMENTS ============ -->
+    <div class="panel-group active" id="support">
+
+      <div class="section-label">財務 · Finance</div>
+      <div class="dept-card" style="--accent:#2563EB">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">FIN</span>
+            <span class="dept-name">財務中心</span>
+          </div>
+          <span class="dept-note">本月</span>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">VAT 退稅前置時間</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">45</span><span class="kpi-unit">天</span>
+              <span class="kpi-delta delta-bad">+5 較上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">業務行銷 · Sales &amp; Marketing</div>
+      <div class="dept-card" style="--accent:#10B981">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">S&amp;M</span>
+            <span class="dept-name">業務行銷</span>
+          </div>
+          <span class="dept-note">本月</span>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">DIO 存貨週轉天數</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">62</span><span class="kpi-unit">天</span>
+              <span class="kpi-delta delta-warn">+4 較上月</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">DSO 應收帳款週轉天數</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">38</span><span class="kpi-unit">天</span>
+              <span class="kpi-delta delta-good">-2 較上月</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-label" style="margin-bottom:8px;">內銷市場：出貨量 / 訂單量</div>
+          <div class="split-stat">
+            <div class="split-item">
+              <div class="split-num">1,240</div>
+              <div class="split-cap">出貨量（噸）</div>
+            </div>
+            <div class="split-item">
+              <div class="split-num">1,380</div>
+              <div class="split-cap">訂單量（噸）</div>
+            </div>
+            <div class="split-item">
+              <div class="split-num" style="color:var(--amber);">89.9%</div>
+              <div class="split-cap">達成率</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">行政管理 · Administration (採購 / 人資 / 總務)</div>
+      <div class="dept-card" style="--accent:#F59E0B">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">ADM</span>
+            <span class="dept-name">行政管理</span>
+          </div>
+          <span class="dept-note">Q1–Q4</span>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-label" style="margin-bottom:2px;">採購支出（季度分佈）</div>
+          <div class="quarter-bars">
+            <div class="qbar-wrap"><div class="qbar" style="height:70%;"></div><div class="qlabel">Q1 82M</div></div>
+            <div class="qbar-wrap"><div class="qbar" style="height:78%;"></div><div class="qlabel">Q2 91M</div></div>
+            <div class="qbar-wrap"><div class="qbar" style="height:64%;"></div><div class="qlabel">Q3 75M</div></div>
+            <div class="qbar-wrap"><div class="qbar current" style="height:88%;"></div><div class="qlabel">Q4 102M</div></div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">總務管理費用（月）</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">3.2</span><span class="kpi-unit">百萬 NT$</span>
+              <span class="kpi-delta delta-good">-3% 較上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">品保 · Quality Assurance</div>
+      <div class="dept-card" style="--accent:#8B5CF6">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">QA</span>
+            <span class="dept-name">品保部</span>
+          </div>
+          <span class="dept-note">本月</span>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">客戶索賠成本</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">1.85</span><span class="kpi-unit">百萬 NT$</span>
+              <span class="kpi-delta delta-bad">+12% 較上月</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">總報廢重量</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">128</span><span class="kpi-unit">噸</span>
+              <span class="kpi-delta delta-warn">+6 較上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============ PRODUCTION LINES ============ -->
+    <div class="panel-group" id="production">
+
+      <div class="section-label">鋼管廠 · Tube Mill / Pipe Mill</div>
+      <div class="dept-card" style="--accent:#F97316">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">TM</span>
+            <span class="dept-name">鋼管廠</span>
+          </div>
+          <span class="dept-note">本月</span>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">淨良率 (Net Yield Rate)</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">94.2</span><span class="kpi-unit">%</span>
+              <span class="kpi-delta delta-good">+0.8 較上月</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">毛良率 (Gross Yield Rate)</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">96.8</span><span class="kpi-unit">%</span>
+              <span class="kpi-delta delta-good">+0.3 較上月</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">生產噸數</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">3,450</span><span class="kpi-unit">噸</span>
+              <span class="kpi-delta delta-good">+150 較上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">分條 / 剪切中心 · Service Center</div>
+      <div class="dept-card" style="--accent:#06B6D4">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">SC</span>
+            <span class="dept-name">服務加工中心</span>
+          </div>
+          <span class="dept-note">本月</span>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">報廢率</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">2.1</span><span class="kpi-unit">%</span>
+              <span class="kpi-delta delta-good">-0.4 較上月</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">表面缺陷索賠件數</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">7</span><span class="kpi-unit">件</span>
+              <span class="kpi-delta delta-bad">+3 較上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">冷軋廠 · Cold Rolling Mill</div>
+      <div class="dept-card" style="--accent:#14B8A6">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">CRM</span>
+            <span class="dept-name">冷軋廠</span>
+          </div>
+          <span class="dept-note">本月</span>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">尺寸精度與表面品質合規率</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">98.5</span><span class="kpi-unit">%</span>
+              <span class="kpi-delta delta-good">+0.2 較上月</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">生產噸數</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">2,180</span><span class="kpi-unit">噸</span>
+              <span class="kpi-delta delta-warn">-60 較上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">生產計劃 · Production Planning</div>
+      <div class="dept-card" style="--accent:#6366F1">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">PP</span>
+            <span class="dept-name">生產計劃部</span>
+          </div>
+          <span class="dept-note">本月</span>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">OTD 準時交貨率</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">91.3</span><span class="kpi-unit">%</span>
+              <span class="kpi-delta delta-good">+1.5 較上月</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">WIP 週轉天數</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">12.4</span><span class="kpi-unit">天</span>
+              <span class="kpi-delta delta-warn">+0.9 較上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">工程 (維修保養) · Engineering</div>
+      <div class="dept-card" style="--accent:#EF4444">
+        <div class="dept-head">
+          <div class="dept-name-wrap">
+            <span class="dept-tag">ENG</span>
+            <span class="dept-name">工程部</span>
+          </div>
+          <span class="dept-note">本月</span>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-top">
+            <span class="kpi-label">維修保養費用</span>
+            <div class="kpi-value-wrap">
+              <span class="kpi-value">4.6</span><span class="kpi-unit">百萬 NT$</span>
+              <span class="kpi-delta delta-bad">+8% 較上月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--mint);"></span>達標</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--amber);"></span>留意</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--red);"></span>異常</div>
+  </footer>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel-group');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
