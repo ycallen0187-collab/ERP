@@ -1,0 +1,187 @@
+列出資料夾 PATH
+磁碟區序號為 00000054 B8EF:383C
+C:.
+|   AGENTS.md
+|   FolderStructure.txt
+|   README.md
+|   
+\---bq
+    +---CVS
+    |       Entries
+    |       Repository
+    |       Root
+    |       
+    +---html
+    |   |   A12F.png
+    |   |   A21F.png
+    |   |   A22F.png
+    |   |   A31F.png
+    |   |   A32F.png
+    |   |   A41F.png
+    |   |   A42F.png
+    |   |   
+    |   \---CVS
+    |           Entries
+    |           Repository
+    |           Root
+    |           
+    +---jsp
+    |   |   bqjj001.jsp
+    |   |   bqjj001List.jsp
+    |   |   bqjj002.jsp
+    |   |   bqjj002List.jsp
+    |   |   bqjj003.jsp
+    |   |   bqjj003List.jsp
+    |   |   bqjj004.jsp
+    |   |   bqjj004List.jsp
+    |   |   bqjj005.jsp
+    |   |   bqjj005List.jsp
+    |   |   bqjj006.jsp
+    |   |   bqjj006List.jsp
+    |   |   bqjj007.jsp
+    |   |   bqjj007List.jsp
+    |   |   bqjj008.jsp
+    |   |   bqjj008List.jsp
+    |   |   bqjj009.jsp
+    |   |   bqjj009List.jsp
+    |   |   bqjj010.jsp
+    |   |   bqjj010List.jsp
+    |   |   bqjj011.jsp
+    |   |   bqjj011List.jsp
+    |   |   bqjj012.jsp
+    |   |   bqjj012List.jsp
+    |   |   bqjj013.jsp
+    |   |   bqjj013List.jsp
+    |   |   bqjj014.jsp
+    |   |   bqjj014List.jsp
+    |   |   bqjj015.jsp
+    |   |   bqjj015List.jsp
+    |   |   bqjj016.jsp
+    |   |   bqjj016List.jsp
+    |   |   bqjj017.jsp
+    |   |   bqjj017List.jsp
+    |   |   bqjj018.jsp
+    |   |   bqjj018List.jsp
+    |   |   bqjj019.jsp
+    |   |   bqjj019List.jsp
+    |   |   bqjj020.jsp
+    |   |   bqjj020List.jsp
+    |   |   bqjj021.jsp
+    |   |   bqjj021List.jsp
+    |   |   bqjj022.jsp
+    |   |   bqjj022List.jsp
+    |   |   bqjj023.jsp
+    |   |   bqjj023List.jsp
+    |   |   bqjj024.jsp
+    |   |   bqjj024List.jsp
+    |   |   bqjj025.jsp
+    |   |   bqjj025List.jsp
+    |   |   bqjj026.jsp
+    |   |   bqjj026List.jsp
+    |   |   bqjj026List_01.jsp
+    |   |   bqjj026List_02.jsp
+    |   |   bqjj027.jsp
+    |   |   bqjj027List.jsp
+    |   |   bqjj027List_01.jsp
+    |   |   bqjj028.jsp
+    |   |   bqjj028List.jsp
+    |   |   bqjj028_Inv.jsp
+    |   |   bqjj029.jsp
+    |   |   bqjj030.jsp
+    |   |   bqjj031.jsp
+    |   |   bqjj031List.jsp
+    |   |   bqjj032.jsp
+    |   |   bqjj033.jsp
+    |   |   bqjj034.jsp
+    |   |   bqjj035.jsp
+    |   |   bqjj036.jsp
+    |   |   bqjj037.jsp
+    |   |   bqjj038.jsp
+    |   |   bqjj039.jsp
+    |   |   bqjj040.jsp
+    |   |   bqjj041.jsp
+    |   |   bqjj042.jsp
+    |   |   bqjj042List.jsp
+    |   |   bqjj042_tabDL1.jsp
+    |   |   bqjj042_tabDL2.jsp
+    |   |   bqjj042_tabFactory.jsp
+    |   |   bqjj042_tabManufacture.jsp
+    |   |   bqjj042_tabOrder.jsp
+    |   |   bqjj042_tabOrderTR.jsp
+    |   |   bqjj042_tabPP.jsp
+    |   |   bqjj042_tabQ.jsp
+    |   |   bqjj042_tabXZ.jsp
+    |   |   bqjj043.jsp
+    |   |   bqjj044.jsp
+    |   |   bqjj045.jsp
+    |   |   bqjj046.jsp
+    |   |   bqjj047.jsp
+    |   |   bqjj049.jsp
+    |   |   bqjj0491.jsp
+    |   |   bqjj0492.jsp
+    |   |   bqjj0493.jsp
+    |   |   bqjj049List.jsp
+    |   |   bqjj051.jsp
+    |   |   bqjj051List.jsp
+    |   |   bqjj051_tab105.jsp
+    |   |   bqjj051_tab108.jsp
+    |   |   bqjj051_tab109.jsp
+    |   |   bqjj051_tabOrder.jsp
+    |   |   bqjj052.jsp
+    |   |   bqjj052List.jsp
+    |   |   bqjj052_tabDL1.jsp
+    |   |   bqjj052_tabDL2.jsp
+    |   |   bqjj052_tabOV.jsp
+    |   |   bqjj052_tabPX.jsp
+    |   |   bqjj052_tabXZ.jsp
+    |   |   bqjjHamBtn.jsp
+    |   |   
+    |   \---CVS
+    |           Entries
+    |           Repository
+    |           Root
+    |           
+    \---src
+        +---com
+        |   +---CVS
+        |   |       Entries
+        |   |       Repository
+        |   |       Root
+        |   |       
+        |   \---icsc
+        |       +---bq
+        |       |   +---core
+        |       |   |   |   bqjc031.java
+        |       |   |   |   bqjc042.java
+        |       |   |   |   bqjc0421.java
+        |       |   |   |   bqjc042105.java
+        |       |   |   |   bqjc042108.java
+        |       |   |   |   bqjc0422.java
+        |       |   |   |   bqjc0423.java
+        |       |   |   |   bqjc0424.java
+        |       |   |   |   bqjc042Factory.java
+        |       |   |   |   bqjc049.java
+        |       |   |   |   bqjc052.java
+        |       |   |   |   bqjcGetConnectionCIC.java
+        |       |   |   |   bqjcGetTRData.java
+        |       |   |   |   
+        |       |   |   \---CVS
+        |       |   |           Entries
+        |       |   |           Repository
+        |       |   |           Root
+        |       |   |           
+        |       |   \---CVS
+        |       |           Entries
+        |       |           Repository
+        |       |           Root
+        |       |           
+        |       \---CVS
+        |               Entries
+        |               Repository
+        |               Root
+        |               
+        \---CVS
+                Entries
+                Repository
+                Root
+                
